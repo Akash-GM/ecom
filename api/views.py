@@ -1,6 +1,6 @@
-from api.models import Product
+from api.models import Product, Order, OrderItem
 from django.shortcuts import get_object_or_404
-from api.serializers import ProductSerializer
+from api.serializers import ProductSerializer, OrderSerializer, OrderItemSeralizer
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -36,4 +36,15 @@ def product_detail(request, pk):
     """
     product = get_object_or_404(Product, pk=pk)
     serializer = ProductSerializer(product)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+def order_list(request):
+    """
+    returns list of all products
+    like ProductList class
+    """
+    orders = Order.objects.all()
+    serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
