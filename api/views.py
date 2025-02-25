@@ -51,7 +51,8 @@ def order_list(request):
     returns list of all products
     like ProductList class
     """
-    orders = Order.objects.all()
+    orders = Order.objects.prefetch_related("items", "items__product")
+    # add "items" or not it will anyway be prefetched when "items__product"
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
