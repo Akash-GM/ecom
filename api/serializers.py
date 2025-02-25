@@ -47,3 +47,9 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ("order_id", "created_At", "user", "status", "items", "total_price")
         # user is a foreign key here
+
+
+class ProductInfoSerializer(serializers.Serializer):
+    products = ProductSerializer(many=True)
+    count = serializers.IntegerField()
+    max_price = serializers.FloatField()
