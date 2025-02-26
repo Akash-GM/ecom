@@ -13,12 +13,6 @@ from rest_framework.decorators import api_view
 from rest_framework.renderers import JSONRenderer
 
 
-class ProductList(generics.ListAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    renderer_classes = [JSONRenderer]
-
-
 @api_view(["GET"])
 def product_list(request):
     """
@@ -28,11 +22,6 @@ def product_list(request):
     products = Product.objects.all()
     serializer = ProductSerializer(products, many=True)
     return Response({"data": serializer.data})
-
-
-class ProductDetail(generics.RetrieveAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
 
 
 @api_view(["GET"])
@@ -68,3 +57,31 @@ def product_info(request):
         }
     )
     return Response(serializer.data)
+
+
+"""
+Generics
+"""
+
+
+class ProductListAPIView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    # queryset = Product.objects.filter(stock__gt=0)
+    # if you wanna filter out something
+
+    serializer_class = ProductSerializer
+
+
+class ProductDetailAPIView(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_url_kwarg = "product_id"
+
+    # by default it will look for pk argument in the url
+    # if in the url its something else (like product_id) then you have to
+    # mention that in the lookup_url_kwarg
+
+
+class OrderListAPIView(generics.ListAPIView):
+    queryset = Order.objects.prefetch_related("items__product")
+    serializer_class = OrderSerializer
